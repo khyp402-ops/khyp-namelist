@@ -1,0 +1,4061 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>高雄青少年歷年名單資料庫</title>
+
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #18202f;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --danger: #dc2626;
+      --danger-dark: #b91c1c;
+      --ok: #059669;
+      --ok-dark: #047857;
+      --yellow: #f59e0b;
+      --yellow-dark: #d97706;
+      --orange: #ea580c;
+      --orange-dark: #c2410c;
+      --purple: #7c3aed;
+      --purple-dark: #6d28d9;
+      --shadow: 0 10px 25px rgba(15, 23, 42, .08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-size: 15px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1480px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 18px 0;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #172554, #2563eb);
+      color: white;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: .04em;
+    }
+
+    .hero p {
+      margin: 0;
+      opacity: .9;
+      line-height: 1.6;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: white;
+      background: var(--primary);
+      font-weight: 700;
+      min-height: 42px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn.secondary {
+      background: #475569;
+    }
+
+    .btn.secondary:hover {
+      background: #334155;
+    }
+
+    .btn.danger {
+      background: var(--danger);
+    }
+
+    .btn.danger:hover {
+      background: var(--danger-dark);
+    }
+
+    .btn.ok {
+      background: var(--ok);
+    }
+
+    .btn.ok:hover {
+      background: var(--ok-dark);
+    }
+
+    .btn.yellow {
+      background: var(--yellow);
+      color: #111827;
+    }
+
+    .btn.yellow:hover {
+      background: var(--yellow-dark);
+      color: #111827;
+    }
+
+    .btn.orange {
+      background: var(--orange);
+      color: white;
+    }
+
+    .btn.orange:hover {
+      background: var(--orange-dark);
+    }
+
+    .btn.purple {
+      background: var(--purple);
+      color: white;
+    }
+
+    .btn.purple:hover {
+      background: var(--purple-dark);
+    }
+
+    .btn.ghost {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.ghost:hover {
+      background: #d1d5db;
+    }
+
+    .btn.small {
+      padding: 7px 10px;
+      min-height: auto;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+
+    .filters {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 11px;
+      background: white;
+      color: var(--text);
+      outline: none;
+      min-height: 42px;
+    }
+
+    select:disabled {
+      background: #f3f4f6;
+      color: #9ca3af;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-head strong {
+      font-size: 17px;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow: auto;
+    }
+
+    .member-table-scroll {
+      max-height: 64vh;
+      overflow: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 1120px;
+    }
+
+    th,
+    td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    tr:hover td {
+      background: #f9fbff;
+    }
+
+    .member-table {
+      table-layout: fixed;
+      min-width: 1228px;
+      width: 100%;
+    }
+
+    .member-table th,
+    .member-table td {
+      padding: 9px 6px;
+      font-size: 13px;
+    }
+
+    .member-table col.col-status { width: 78px; }
+    .member-table col.col-member-type { width: 100px; }
+    .member-table col.col-rank { width: 56px; }
+    .member-table col.col-care-area { width: 84px; }
+    .member-table col.col-big-area { width: 70px; }
+    .member-table col.col-name { width: 90px; }
+    .member-table col.col-gender { width: 48px; }
+    .member-table col.col-system { width: 64px; }
+    .member-table col.col-grade { width: 54px; }
+    .member-table col.col-identity { width: 70px; }
+    .member-table col.col-junior { width: 104px; }
+    .member-table col.col-high { width: 116px; }
+    .member-table col.col-university { width: 122px; }
+    .member-table col.col-actions { width: 172px; }
+
+    .member-table .actions {
+      gap: 4px;
+    }
+
+    .member-table .actions .btn.small {
+      padding: 6px 8px;
+      font-size: 12px;
+      line-height: 1.15;
+      min-width: 44px;
+    }
+
+    .school-cell {
+      position: relative;
+      overflow: visible;
+      cursor: help;
+    }
+
+    .school-cell .cell-text {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .school-cell[data-tooltip]:not([data-tooltip=""]):hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      z-index: 80;
+      width: max-content;
+      max-width: 320px;
+      padding: 9px 11px;
+      border-radius: 10px;
+      background: #111827;
+      color: #ffffff;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .22);
+      white-space: normal;
+      line-height: 1.45;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .school-cell[data-tooltip]:not([data-tooltip=""]):hover::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 2px);
+      transform: translateX(-50%);
+      z-index: 81;
+      border-width: 6px 6px 0 6px;
+      border-style: solid;
+      border-color: #111827 transparent transparent transparent;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .badge.ok {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge.off,
+    .badge.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge.mid {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge.warn {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+      justify-content: center;
+    }
+
+    .empty {
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      background: rgba(15, 23, 42, .55);
+      z-index: 900;
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .modal {
+      width: min(900px, 100%);
+      margin: 24px auto;
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 25px 80px rgba(15,23,42,.28);
+      overflow: hidden;
+    }
+
+    .modal.wide-modal {
+      width: min(1420px, 100%);
+    }
+
+    #importModal .modal.wide-modal {
+      height: calc(100vh - 48px);
+      max-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #importModal .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #importModal .notice,
+    #importModal .summary-grid {
+      flex: 0 0 auto;
+    }
+
+    .modal.small-modal {
+      width: min(560px, 100%);
+    }
+
+    .modal-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+    }
+
+    .modal-foot {
+      padding: 14px 18px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex: 0 0 auto;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .notice {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      border-radius: 14px;
+      padding: 12px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f8fafc;
+      padding: 12px;
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .note-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .note-time {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      display: none;
+      background: #111827;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      z-index: 1200;
+      box-shadow: var(--shadow);
+      max-width: calc(100vw - 32px);
+      text-align: center;
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .import-action {
+      min-width: 130px;
+    }
+
+    .candidate-select {
+      min-width: 240px;
+    }
+
+    .import-status-select,
+    .import-stop-reason-select {
+      min-width: 112px;
+    }
+
+    .import-summary-card {
+      text-align: left;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+
+    .import-summary-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+    }
+
+    .import-summary-card.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .14);
+    }
+
+    .import-status-row-similar td {
+      background: #fffbeb;
+    }
+
+    .import-status-row-error td {
+      background: #fef2f2;
+    }
+
+    .import-table {
+      min-width: 1960px;
+      table-layout: fixed;
+    }
+
+    .import-table th,
+    .import-table td {
+      white-space: normal;
+      vertical-align: middle;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .import-table th {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      text-align: center;
+      white-space: nowrap;
+      background: #f8fafc;
+    }
+
+    .import-table select {
+      text-align: center;
+      text-align-last: center;
+    }
+
+    .import-table td:nth-child(16) {
+      text-align: left;
+    }
+
+    .import-table .center-cell {
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .import-name-cell {
+      font-size: 16px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .import-muted {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .candidate-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 360px;
+    }
+
+    .candidate-card {
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      border-radius: 12px;
+      padding: 8px 10px;
+    }
+
+    .candidate-title {
+      font-weight: 900;
+      color: #92400e;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+
+    .candidate-meta {
+      color: #374151;
+      font-size: 13px;
+      margin-bottom: 3px;
+      text-align: center;
+    }
+
+    .candidate-reason {
+      color: #92400e;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .import-error-detail {
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: #991b1b;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .import-filter-info {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    #importPreviewTable {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .pager {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .page-size {
+      width: auto;
+      min-width: 96px;
+      min-height: 36px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .stats-controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stats-actions {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stats-meta {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      line-height: 1.6;
+    }
+
+    .stats-result-scroll {
+      width: 100%;
+      max-height: 58vh;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .stats-table {
+      min-width: 900px;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .stats-table th,
+    .stats-table td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .stats-table th:first-child,
+    .stats-table td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      width: 140px;
+      min-width: 140px;
+      max-width: 140px;
+      text-align: center;
+      vertical-align: middle;
+      background: #ffffff;
+      box-shadow: 1px 0 0 var(--line);
+    }
+
+    .stats-table th:first-child {
+      z-index: 6;
+      background: #f8fafc;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .stats-value-label {
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .stats-total-row td {
+      background: #f8fafc;
+      font-weight: 900;
+    }
+
+    .stats-total-row td:first-child {
+      background: #f8fafc;
+    }
+
+    /* 年度升級預覽 */
+    #upgradeModal .modal.upgrade-modal {
+      width: min(1180px, 100%);
+      height: calc(100vh - 48px);
+      max-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #upgradeModal .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #upgradeModal .notice,
+    #upgradeModal .upgrade-search-panel,
+    #upgradeModal .upgrade-count {
+      flex: 0 0 auto;
+    }
+
+    .upgrade-search-panel {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      gap: 10px;
+      align-items: end;
+      margin: 0 0 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .upgrade-search-panel .field {
+      gap: 5px;
+    }
+
+    .upgrade-search-panel input {
+      background: #ffffff;
+    }
+
+    .upgrade-search-info {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+      white-space: nowrap;
+      padding-bottom: 8px;
+    }
+
+    .upgrade-count {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    #upgradeList {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .upgrade-table {
+      min-width: 1120px;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .upgrade-table th,
+    .upgrade-table td {
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .upgrade-table th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #f8fafc;
+    }
+
+    .upgrade-table select {
+      min-height: 36px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      text-align: center;
+      text-align-last: center;
+    }
+
+    .upgrade-table .upgrade-original {
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .upgrade-table .upgrade-new {
+      background: #eff6ff;
+    }
+
+    .upgrade-table .upgrade-status {
+      background: #f8fafc;
+      font-weight: 900;
+    }
+
+    .upgrade-status-select {
+      min-width: 92px;
+    }
+
+    .upgrade-stop-reason-select {
+      min-width: 112px;
+    }
+
+    .upgrade-row-hit td {
+      background: #fff7ed;
+      box-shadow: inset 0 0 0 9999px rgba(251, 146, 60, .08);
+    }
+
+    @media (max-width: 1100px) {
+      .filters {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .filters,
+      .form-grid,
+      .summary-grid,
+      .stats-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        width: 100%;
+        padding: 12px;
+      }
+
+      .hero {
+        padding: 18px;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .toolbar .btn,
+      .stats-actions .btn {
+        width: 100%;
+      }
+
+      .hero h1 {
+        font-size: 22px;
+      }
+
+      .panel-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .modal {
+        margin: 0 auto;
+      }
+
+      #importModal .modal.wide-modal {
+        height: calc(100vh - 24px);
+        max-height: calc(100vh - 24px);
+      }
+
+      #upgradeModal .modal.upgrade-modal {
+        height: calc(100vh - 24px);
+        max-height: calc(100vh - 24px);
+      }
+
+      .upgrade-search-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .upgrade-search-panel .btn {
+        width: 100%;
+      }
+
+      .upgrade-search-info {
+        white-space: normal;
+        padding-bottom: 0;
+      }
+
+      .modal-foot {
+        justify-content: stretch;
+      }
+
+      .modal-foot .btn {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">處理中...</div>
+  <div class="toast" id="toast"></div>
+  <input class="hidden-input" id="importFileInput" type="file" accept=".xlsx,.xls" onchange="handleImportFileChange(event)">
+
+  <main class="page">
+    <section class="hero">
+      <h1>高雄青少年&歷高畢名單查詢系統</h1>
+      <p>★ 每年7月增加升國中名單時，請留意操作順序：① 執行年度升級 ➡︎ ② 個別新增或批次匯入名單。</p>
+    </section>
+
+    <section class="toolbar">
+      <button class="btn" onclick="openMemberModal()">新增名單</button>
+      <button class="btn ok" onclick="openImportFilePicker()">上傳EXCEL批次匯入</button>
+      <button class="btn ok" onclick="downloadTemplate()">下載EXCEL格式</button>
+      <button class="btn purple" onclick="copyFilteredTable()">複製表格</button>
+      <button class="btn purple" onclick="setupDatabase()">安全化初始</button>
+      <button class="btn purple" onclick="previewUpgrade()">年度升級預覽</button>
+      <button class="btn orange" onclick="searchMembers(0)">查詢名單</button>
+      <button class="btn orange" onclick="openStatsModal()">統計分析</button>
+    </section>
+
+    <section class="filters">
+      <div class="field">
+        <label>搜尋姓名</label>
+        <input id="filterKeyword" placeholder="輸入姓名" onkeydown="handleKeywordKeydown(event)">
+      </div>
+
+      <div class="field">
+        <label>啟用狀態</label>
+        <select id="filterStatus">
+          <option value="啟用">啟用</option>
+          <option value="">全部</option>
+          <option value="停用">停用</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>照顧區</label>
+        <select id="filterCareArea" onchange="handleFilterCareAreaChange()">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>大區</label>
+        <select id="filterBigArea" disabled>
+          <option value="">請先選照顧區</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>學制</label>
+        <select id="filterSystem" onchange="handleFilterSystemChange()">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>年級</label>
+        <select id="filterGrade" disabled>
+          <option value="">請先選學制</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>排數</label>
+        <select id="filterRank">
+          <option value="">全部</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>中學生/歷高畢</label>
+        <select id="filterMemberType">
+          <option value="">全部</option>
+          <option value="中學生">中學生</option>
+          <option value="歷高畢">歷高畢</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>每頁顯示</label>
+        <select id="pageSizeSelect" onchange="handlePageSizeChange()">
+          <option value="200">200</option>
+          <option value="500">500</option>
+          <option value="800">800</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <strong>名單列表</strong>
+        <div class="pager">
+          <span class="count" id="memberCount">載入中...</span>
+          <button class="btn ghost small" onclick="prevPage()">上一頁</button>
+          <button class="btn ghost small" onclick="nextPage()">下一頁</button>
+        </div>
+      </div>
+
+      <div class="table-wrap member-table-scroll" id="memberTableWrap">
+        <div class="empty">正在載入第一頁名單...</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="memberModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="memberModalTitle">新增名單</h2>
+        <button class="btn ghost small" onclick="closeMemberModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field">
+            <label>姓名 *</label>
+            <input id="formName" placeholder="姓名">
+          </div>
+
+          <div class="field">
+            <label>性別</label>
+            <select id="formGender"></select>
+          </div>
+
+          <div class="field">
+            <label>現在學制 *</label>
+            <select id="formSystem" onchange="handleFormSystemChange()"></select>
+          </div>
+
+          <div class="field">
+            <label>現在年級 *</label>
+            <select id="formGrade" disabled></select>
+          </div>
+
+          <div class="field">
+            <label>照顧區</label>
+            <select id="formCareArea" onchange="handleFormCareAreaChange()"></select>
+          </div>
+
+          <div class="field">
+            <label>大區</label>
+            <select id="formBigArea" disabled></select>
+          </div>
+
+          <div class="field">
+            <label>身分</label>
+            <select id="formIdentity"></select>
+          </div>
+
+          <div class="field">
+            <label>預計高中畢業年份</label>
+            <input id="formGraduationYear" inputmode="numeric" placeholder="例如 2030，可空白自動推導">
+          </div>
+
+          <div class="field">
+            <label>啟用狀態</label>
+            <select id="formStatus" onchange="handleStatusChangeInForm()">
+              <option value="啟用">啟用</option>
+              <option value="停用">停用</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>停用原因</label>
+            <select id="formStopReason"></select>
+          </div>
+
+          <div class="field">
+            <label>國中校名</label>
+            <input id="formJuniorSchool" placeholder="選填">
+          </div>
+
+          <div class="field">
+            <label>高中／五專校名</label>
+            <input id="formHighCollegeSchool" placeholder="選填">
+          </div>
+
+          <div class="field">
+            <label>大學／研究所校名</label>
+            <input id="formUniversity" placeholder="選填">
+          </div>
+
+          <div class="field">
+            <label>自動升級</label>
+            <select id="formAutoUpgrade">
+              <option value="TRUE">TRUE</option>
+              <option value="FALSE">FALSE</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>本次新增備註</label>
+            <textarea id="formNote" placeholder="選填。備註會寫入「備註紀錄」，不會放在主表。"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" onclick="closeMemberModal()">取消</button>
+        <button class="btn" onclick="submitMember()">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="importModal">
+    <div class="modal wide-modal">
+      <div class="modal-head">
+        <h2>Excel 批次匯入預覽</h2>
+        <button class="btn ghost small" onclick="closeImportModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="notice">
+          可新增資料預設「新增」。疑似同人預設「跳過」，請先點「疑似同人」分類逐筆查核，可改成「更新既有」或「新增為不同人」。每筆資料可在此修改匯入後的啟用狀態與停用原因。錯誤資料不會匯入。
+        </div>
+
+        <div class="summary-grid" id="importSummary"></div>
+
+        <div class="table-wrap" id="importPreviewTable"></div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" onclick="closeImportModal()">取消</button>
+        <button class="btn ok" onclick="confirmImport()">確認執行匯入</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="similarModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>疑似同人確認</h2>
+        <button class="btn ghost small" onclick="closeSimilarModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="notice">
+          系統找到可能相同的人。請確認這筆資料是「同一人」還是「不同人」。
+        </div>
+
+        <div class="table-wrap" id="similarList"></div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" onclick="closeSimilarModal()">取消</button>
+        <button class="btn" onclick="forceCreateDifferentPerson()">仍新增為不同人</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="noteModal">
+    <div class="modal small-modal">
+      <div class="modal-head">
+        <h2 id="noteModalTitle">備註紀錄</h2>
+        <button class="btn ghost small" onclick="closeNoteModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field">
+          <label>新增備註</label>
+          <textarea id="newNoteText" placeholder="輸入備註"></textarea>
+        </div>
+
+        <div style="margin-top:12px;">
+          <button class="btn" onclick="submitNote()">新增備註</button>
+        </div>
+
+        <hr style="border:0;border-top:1px solid var(--line);margin:16px 0;">
+
+        <div id="noteList" class="note-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="statusModal">
+    <div class="modal small-modal">
+      <div class="modal-head">
+        <h2 id="statusModalTitle">切換狀態</h2>
+        <button class="btn ghost small" onclick="closeStatusModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field">
+          <label>新狀態</label>
+          <select id="statusNewValue" onchange="handleStatusModalChange()">
+            <option value="啟用">啟用</option>
+            <option value="停用">停用</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>停用原因</label>
+          <select id="statusReason"></select>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>本次備註</label>
+          <textarea id="statusNote" placeholder="選填"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" onclick="closeStatusModal()">取消</button>
+        <button class="btn" onclick="submitStatusChange()">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="upgradeModal">
+    <div class="modal upgrade-modal">
+      <div class="modal-head">
+        <h2>年度升級預覽</h2>
+        <button class="btn ghost small" onclick="closeUpgradeModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="notice">
+          只會處理「啟用」且「自動升級 = TRUE」且年級不是「未知／已畢業」的名單。新學制、新年級會先依升級規則自動判定，新狀態也會依新學制自動判定；需要時可在表格內手動改成啟用或停用。搜尋姓名只影響畫面顯示，不會排除其他名單。
+        </div>
+
+        <div class="upgrade-search-panel">
+          <div class="field">
+            <label>搜尋姓名</label>
+            <input id="upgradeSearchKeyword" placeholder="輸入姓名，快速找到個別對象" oninput="handleUpgradeSearchInput()" onkeydown="handleUpgradeSearchKeydown(event)">
+          </div>
+
+          <button class="btn ghost" onclick="clearUpgradeSearch()">清除搜尋</button>
+
+          <div class="upgrade-search-info" id="upgradeSearchInfo">尚未搜尋</div>
+        </div>
+
+        <p class="upgrade-count" id="upgradeCount">尚未載入年度升級資料</p>
+
+        <div class="table-wrap" id="upgradeList"></div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" onclick="closeUpgradeModal()">取消</button>
+        <button class="btn danger" onclick="runUpgrade()">執行年度升級</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="statsModal">
+    <div class="modal wide-modal">
+      <div class="modal-head">
+        <h2>統計分析</h2>
+        <button class="btn ghost small" onclick="closeStatsModal()">關閉</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="notice">
+          統計範圍會套用主畫面目前的篩選條件。產生後可按「複製表格」，直接貼到 Excel。
+        </div>
+
+        <div class="stats-controls">
+          <div class="field">
+            <label>列欄位</label>
+            <select id="statsRowField"></select>
+          </div>
+
+          <div class="field">
+            <label>欄欄位</label>
+            <select id="statsColField"></select>
+          </div>
+
+          <div class="field">
+            <label>統計值</label>
+            <select id="statsValueMode">
+              <option value="totalActiveCount">總人數</option>
+              <option value="middleStudentCount">中學生人數</option>
+              <option value="graduateCount">歷高畢人數</option>
+              <option value="inactiveCount">停用人數</option>
+            </select>
+          </div>
+
+          <div class="stats-actions">
+            <button class="btn orange" onclick="generateStatsTable()">產生統計表</button>
+            <button class="btn purple" onclick="copyStatsTable()">複製表格</button>
+          </div>
+        </div>
+
+        <p class="stats-meta" id="statsMeta">尚未產生統計表</p>
+
+        <div class="stats-result-scroll" id="statsResultBox">
+          <div class="empty">請選擇欄位後按「產生統計表」</div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" onclick="closeStatsModal()">關閉</button>
+        <button class="btn purple" onclick="copyStatsTable()">複製表格</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyXCMTA_msfSKM9ztI2p8AaBbRFwTGvXcrufeIs30BQhPz8t0q6XngyAlp1hwTnkLXE/exec';
+
+(function() {
+  if (window.google && window.google.script && window.google.script.run) {
+    return;
+  }
+
+  function createRunner() {
+    const runnerState = {
+      successHandler: null,
+      failureHandler: null
+    };
+
+    const proxy = new Proxy({}, {
+      get: function(target, prop) {
+        if (prop === 'withSuccessHandler') {
+          return function(handler) {
+            runnerState.successHandler = handler;
+            return proxy;
+          };
+        }
+
+        if (prop === 'withFailureHandler') {
+          return function(handler) {
+            runnerState.failureHandler = handler;
+            return proxy;
+          };
+        }
+
+        return function() {
+          const args = Array.prototype.slice.call(arguments);
+          const successHandler = runnerState.successHandler;
+          const failureHandler = runnerState.failureHandler;
+
+          runnerState.successHandler = null;
+          runnerState.failureHandler = null;
+
+          fetch(GAS_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify({
+              action: String(prop),
+              args: args
+            })
+          })
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(res) {
+              if (!res || res.success === false) {
+                throw new Error(res && res.error ? res.error : 'API 呼叫失敗');
+              }
+
+              if (typeof successHandler === 'function') {
+                successHandler(res.data);
+              }
+            })
+            .catch(function(err) {
+              if (typeof failureHandler === 'function') {
+                failureHandler(err);
+              } else {
+                console.error(err);
+                alert(err && err.message ? err.message : String(err));
+              }
+            });
+
+          return proxy;
+        };
+      }
+    });
+
+    return proxy;
+  }
+
+  window.google = {
+    script: {
+      run: createRunner()
+    }
+  };
+})();
+    let state = {
+      members: [],
+      settings: {},
+      areas: {
+        careAreas: [],
+        bigAreas: []
+      },
+      gradeMap: {},
+      rankOptions: [],
+      editingUid: null,
+      noteUid: null,
+      statusUid: null,
+      pendingCreateData: null,
+      pendingCreateNote: '',
+      importPreview: null,
+      importFileName: '',
+      importFilter: 'ALL',
+      importDecisions: {},
+      xlsxLoading: false,
+      statsResult: null,
+      upgradePreviewItems: [],
+      upgradeSearchKeyword: '',
+      query: {
+        offset: 0,
+        limit: 200,
+        total: 0,
+        hasPrev: false,
+        hasNext: false
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      bootstrapLoad();
+    });
+
+    function showLoading() {
+      document.getElementById('loading').style.display = 'flex';
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    function showToast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.style.display = 'block';
+
+      setTimeout(function() {
+        el.style.display = 'none';
+      }, 2200);
+    }
+
+    function handleError(err) {
+      hideLoading();
+      const message = err && err.message ? err.message : String(err);
+      alert(message);
+    }
+
+    function setListLoading(text) {
+      document.getElementById('memberCount').textContent = text || '查詢中...';
+      document.getElementById('memberTableWrap').innerHTML = '<div class="empty">' + escapeHtml(text || '查詢中...') + '</div>';
+    }
+
+    function bootstrapLoad() {
+      setListLoading('載入第一頁名單中...');
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          state.settings = res.settings || {};
+          state.areas = res.areas || {
+            careAreas: [],
+            bigAreas: []
+          };
+          state.gradeMap = res.gradeMap || {};
+
+          fillOptions();
+
+          if (res.query && res.query.success !== false) {
+            applyQueryResult(res.query);
+            showToast('載入完成' + (res.elapsedMs ? '｜後端 ' + res.elapsedMs + 'ms' : ''));
+          } else {
+            document.getElementById('memberCount').textContent = '查詢失敗';
+            document.getElementById('memberTableWrap').innerHTML =
+              '<div class="empty">名單查詢失敗：' + escapeHtml(res.query && res.query.error ? res.query.error : '未知錯誤') + '</div>';
+          }
+        })
+        .withFailureHandler(handleError)
+        .bootstrapData();
+    }
+
+    function setupDatabase() {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          showToast(res.message || '安全初始化完成');
+          bootstrapLoad();
+        })
+        .withFailureHandler(handleError)
+        .setupDatabase();
+    }
+
+    function getFilterPayload() {
+      return {
+        keyword: getValue('filterKeyword'),
+        status: getValue('filterStatus'),
+        careArea: getValue('filterCareArea'),
+        bigArea: getValue('filterBigArea'),
+        system: getValue('filterSystem'),
+        grade: getValue('filterGrade'),
+        rank: getValue('filterRank'),
+        memberType: getValue('filterMemberType')
+      };
+    }
+
+    function handleKeywordKeydown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        searchMembers(0);
+      }
+    }
+
+    function searchMembers(offset) {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          applyQueryResult(res);
+        })
+        .withFailureHandler(handleError)
+        .searchMembers(getFilterPayload(), offset || 0, state.query.limit);
+    }
+
+    function applyQueryResult(res) {
+      state.members = res.members || [];
+      state.query.offset = res.offset || 0;
+      state.query.limit = res.limit || 200;
+      state.query.total = res.total || 0;
+      state.query.hasPrev = !!res.hasPrev;
+      state.query.hasNext = !!res.hasNext;
+
+      if (res.rankOptions && Array.isArray(res.rankOptions)) {
+        state.rankOptions = res.rankOptions;
+        fillRankSelect();
+      }
+
+      document.getElementById('pageSizeSelect').value = String(state.query.limit);
+
+      renderMembers();
+    }
+
+    function prevPage() {
+      if (!state.query.hasPrev) {
+        showToast('已經是第一頁');
+        return;
+      }
+
+      const nextOffset = Math.max(0, state.query.offset - state.query.limit);
+      searchMembers(nextOffset);
+    }
+
+    function nextPage() {
+      if (!state.query.hasNext) {
+        showToast('已經是最後一頁');
+        return;
+      }
+
+      const nextOffset = state.query.offset + state.query.limit;
+      searchMembers(nextOffset);
+    }
+
+    function handlePageSizeChange() {
+      const value = Number(getValue('pageSizeSelect') || 200);
+      state.query.limit = value;
+      searchMembers(0);
+    }
+
+    function copyFilteredTable() {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+
+          if (!res || !res.success) {
+            alert('複製表格失敗');
+            return;
+          }
+
+          const tsv = normalizeCopiedTsv(res.tsv || '');
+          copyTextToClipboard(tsv);
+          showToast('已複製 ' + (res.total || 0) + ' 筆，可直接貼到 Excel');
+        })
+        .withFailureHandler(handleError)
+        .copyFilteredMembers(getFilterPayload());
+    }
+
+    function normalizeCopiedTsv(tsv) {
+      const lines = String(tsv || '').split(/\r?\n/).filter(function(line) {
+        return line.trim() !== '';
+      });
+
+      if (!lines.length) return '';
+
+      const rows = lines.map(function(line) {
+        return line.split('\t');
+      });
+
+      const oldHeaders = rows[0];
+
+      const outputColumns = [
+        { label: '狀態', from: '狀態' },
+        { label: '中學生/歷高畢', from: '中學生/歷高畢' },
+        { label: '排數', from: '排數' },
+        { label: '照顧區', from: '照顧區' },
+        { label: '大區', from: '大區' },
+        { label: '姓名', from: '姓名' },
+        { label: '性別', from: '性別' },
+        { label: '學制', from: '學制' },
+        { label: '年級', from: '年級' },
+        { label: '身分', from: '身分' },
+        { label: '國中', from: '國中' },
+        { label: '高中／五專', from: '高中／五專' },
+        { label: '大學／研究所', from: '大學' }
+      ];
+
+      const output = [];
+      output.push(outputColumns.map(function(col) {
+        return col.label;
+      }).join('\t'));
+
+      rows.slice(1).forEach(function(row) {
+        const newRow = outputColumns.map(function(col) {
+          let index = oldHeaders.indexOf(col.from);
+
+          if (index < 0 && col.label === '大學／研究所') {
+            index = oldHeaders.indexOf('大學／研究所');
+          }
+
+          return index >= 0 ? (row[index] || '') : '';
+        });
+
+        output.push(newRow.join('\t'));
+      });
+
+      return output.join('\n');
+    }
+
+    function copyTextToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+
+    function downloadTemplate() {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+
+          if (!res || !res.success) {
+            alert('下載模板失敗');
+            return;
+          }
+
+          const blob = base64ToBlob(res.base64, res.mimeType);
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = res.fileName || '高雄青少年歷年名單匯入模板.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          URL.revokeObjectURL(url);
+
+          showToast('模板已下載');
+        })
+        .withFailureHandler(handleError)
+        .downloadImportTemplate();
+    }
+
+    function base64ToBlob(base64, mimeType) {
+      const byteCharacters = atob(base64);
+      const byteArrays = [];
+      const sliceSize = 1024;
+
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        const byteNumbers = new Array(slice.length);
+
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+
+      return new Blob(byteArrays, {
+        type: mimeType || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+    }
+
+    function ensureXlsxLoaded(callback) {
+      if (typeof XLSX !== 'undefined') {
+        callback();
+        return;
+      }
+
+      if (state.xlsxLoading) {
+        showToast('Excel 套件載入中');
+        return;
+      }
+
+      state.xlsxLoading = true;
+      showLoading();
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+
+      script.onload = function() {
+        state.xlsxLoading = false;
+        hideLoading();
+        callback();
+      };
+
+      script.onerror = function() {
+        state.xlsxLoading = false;
+        hideLoading();
+        alert('Excel 解析套件載入失敗，請重新整理後再試');
+      };
+
+      document.head.appendChild(script);
+    }
+
+    function openImportFilePicker() {
+      ensureXlsxLoaded(function() {
+        const input = document.getElementById('importFileInput');
+        input.value = '';
+        input.click();
+      });
+    }
+
+    function handleImportFileChange(event) {
+      const file = event.target.files && event.target.files[0];
+
+      if (!file) return;
+
+      if (!/\.(xlsx|xls)$/i.test(file.name)) {
+        alert('請選擇 .xlsx 或 .xls 檔案');
+        return;
+      }
+
+      if (typeof XLSX === 'undefined') {
+        alert('Excel 解析套件尚未載入，請重新按一次匯入');
+        return;
+      }
+
+      state.importFileName = file.name;
+
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {
+            type: 'array'
+          });
+
+          if (!workbook.SheetNames.length) {
+            alert('Excel 沒有工作表');
+            return;
+          }
+
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+
+          const rows = XLSX.utils.sheet_to_json(worksheet, {
+            defval: '',
+            raw: false
+          });
+
+          if (!rows.length) {
+            alert('Excel 沒有可匯入資料');
+            return;
+          }
+
+          sendImportRowsToServer(rows, file.name);
+        } catch (err) {
+          alert('Excel 解析失敗：' + (err.message || err));
+        }
+      };
+
+      reader.onerror = function() {
+        alert('讀取 Excel 檔案失敗');
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    function sendImportRowsToServer(rows, fileName) {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+
+          if (!res || !res.success) {
+            alert('匯入預覽失敗');
+            return;
+          }
+
+          state.importPreview = res;
+          state.importFileName = fileName || '';
+          state.importFilter = 'ALL';
+          state.importDecisions = {};
+
+          (res.items || []).forEach(function(item) {
+            state.importDecisions[item.rowId] = {
+              action: item.defaultAction || 'SKIP',
+              uid: item.correspondingUid || ''
+            };
+          });
+
+          renderImportPreview(res);
+          document.getElementById('importModal').style.display = 'block';
+        })
+        .withFailureHandler(handleError)
+        .previewImportRows(rows, fileName);
+    }
+
+    function renderImportPreview(res) {
+      renderImportSummary(res.summary || {});
+      renderImportPreviewTable();
+    }
+
+    function renderImportSummary(summary) {
+      const summaryBox = document.getElementById('importSummary');
+
+      const cards = [
+        { key: 'ALL', label: '全部', value: summary.total || 0 },
+        { key: 'CREATE', label: '可新增', value: summary.create || 0 },
+        { key: 'SIMILAR', label: '疑似同人', value: summary.similar || 0 },
+        { key: 'SKIP', label: '預設跳過', value: summary.skip || 0 },
+        { key: 'ERROR', label: '錯誤', value: summary.error || 0 }
+      ];
+
+      summaryBox.innerHTML = cards.map(function(card) {
+        return '' +
+          '<div class="summary-card import-summary-card ' + (state.importFilter === card.key ? 'active' : '') + '" onclick="setImportPreviewFilter(\'' + card.key + '\')">' +
+          '<strong>' + escapeHtml(card.value) + '</strong>' +
+          '<span>' + escapeHtml(card.label) + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    function setImportPreviewFilter(filterKey) {
+      state.importFilter = filterKey || 'ALL';
+
+      if (state.importPreview) {
+        renderImportPreview(state.importPreview);
+      }
+    }
+
+    function getImportFilteredItems() {
+      const rows = state.importPreview && state.importPreview.items ? state.importPreview.items : [];
+      const filter = state.importFilter || 'ALL';
+
+      if (filter === 'ALL') return rows;
+
+      return rows.filter(function(item) {
+        if (filter === 'CREATE') return item.status === '可新增';
+        if (filter === 'SIMILAR') return item.status === '疑似同人';
+        if (filter === 'ERROR') return item.status === '錯誤';
+        if (filter === 'SKIP') return item.defaultAction === 'SKIP' || item.status === '空白列';
+        return true;
+      });
+    }
+
+    function renderImportPreviewTable() {
+      const rows = getImportFilteredItems();
+      const allRows = state.importPreview && state.importPreview.items ? state.importPreview.items : [];
+      const box = document.getElementById('importPreviewTable');
+
+      if (!allRows.length) {
+        box.innerHTML = '<div class="empty">沒有可預覽資料</div>';
+        return;
+      }
+
+      if (!rows.length) {
+        box.innerHTML = '<p class="import-filter-info">目前篩選：' + escapeHtml(getImportFilterLabel()) + '｜0 筆</p><div class="empty">這個分類沒有資料</div>';
+        return;
+      }
+
+      let html = '';
+      html += '<p class="import-filter-info">目前篩選：' + escapeHtml(getImportFilterLabel()) + '｜顯示 ' + rows.length + ' / ' + allRows.length + ' 筆</p>';
+      html += '<table class="import-table">';
+      html += '<colgroup>';
+      html += '<col style="width:62px;">';
+      html += '<col style="width:92px;">';
+      html += '<col style="width:124px;">';
+      html += '<col style="width:136px;">';
+      html += '<col style="width:110px;">';
+      html += '<col style="width:62px;">';
+      html += '<col style="width:78px;">';
+      html += '<col style="width:70px;">';
+      html += '<col style="width:92px;">';
+      html += '<col style="width:86px;">';
+      html += '<col style="width:92px;">';
+      html += '<col style="width:120px;">';
+      html += '<col style="width:140px;">';
+      html += '<col style="width:140px;">';
+      html += '<col style="width:170px;">';
+      html += '<col style="width:410px;">';
+      html += '<col style="width:150px;">';
+      html += '<col style="width:280px;">';
+      html += '</colgroup>';
+      html += '<thead><tr>';
+      html += '<th>列</th>';
+      html += '<th>系統判定</th>';
+      html += '<th>匯入後狀態</th>';
+      html += '<th>停用原因</th>';
+      html += '<th>姓名</th>';
+      html += '<th>性別</th>';
+      html += '<th>學制</th>';
+      html += '<th>年級</th>';
+      html += '<th>照顧區</th>';
+      html += '<th>大區</th>';
+      html += '<th>身分</th>';
+      html += '<th>國中</th>';
+      html += '<th>高中／五專</th>';
+      html += '<th>大學／研究所</th>';
+      html += '<th>備註</th>';
+      html += '<th>疑似同人／錯誤理由</th>';
+      html += '<th>處理</th>';
+      html += '<th>更新對象</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+
+      rows.forEach(function(item) {
+        const d = item.data || {};
+        const statusClass = item.status === '可新增' ? 'ok' :
+          item.status === '疑似同人' ? 'warn' :
+          item.status === '錯誤' ? 'error' : '';
+        const rowClass = item.status === '疑似同人' ? 'import-status-row-similar' :
+          item.status === '錯誤' ? 'import-status-row-error' : '';
+
+        html += '<tr class="' + rowClass + '">';
+        html += '<td class="center-cell">' + escapeHtml(item.rowIndex) + '</td>';
+        html += '<td class="center-cell"><span class="badge ' + statusClass + '">' + escapeHtml(item.status) + '</span></td>';
+        html += '<td>' + buildImportStatusSelect(item) + '</td>';
+        html += '<td>' + buildImportStopReasonSelect(item) + '</td>';
+        html += '<td><div class="import-name-cell">' + escapeHtml(d['姓名']) + '</div></td>';
+        html += '<td class="center-cell">' + escapeHtml(d['性別']) + '</td>';
+        html += '<td class="center-cell">' + escapeHtml(displaySystem(d['現在學制'])) + '</td>';
+        html += '<td class="center-cell">' + escapeHtml(isGraduate(d['現在學制']) ? '' : d['現在年級']) + '</td>';
+        html += '<td>' + escapeHtml(d['照顧區']) + '</td>';
+        html += '<td>' + escapeHtml(d['大區']) + '</td>';
+        html += '<td>' + escapeHtml(d['身分']) + '</td>';
+        html += '<td>' + escapeHtml(d['國中校名']) + '</td>';
+        html += '<td>' + escapeHtml(d['高中五專校名']) + '</td>';
+        html += '<td>' + escapeHtml(d['大學校名']) + '</td>';
+        html += '<td>' + escapeHtml(d['_note']) + '</td>';
+        html += '<td>' + buildCandidateDetail(item) + '</td>';
+        html += '<td>' + buildImportActionSelect(item) + '</td>';
+        html += '<td>' + buildCandidateSelect(item) + '</td>';
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      box.innerHTML = html;
+
+      rows.forEach(function(item) {
+        updateImportCandidateSelectState(item.rowId);
+        updateImportStopReasonState(item.rowId);
+      });
+    }
+
+    function getImportFilterLabel() {
+      const map = {
+        ALL: '全部',
+        CREATE: '可新增',
+        SIMILAR: '疑似同人',
+        SKIP: '預設跳過',
+        ERROR: '錯誤'
+      };
+
+      return map[state.importFilter || 'ALL'] || '全部';
+    }
+
+    function getImportDecision(item) {
+      const existing = state.importDecisions[item.rowId];
+
+      if (existing) {
+        return existing;
+      }
+
+      return {
+        action: item.defaultAction || 'SKIP',
+        uid: item.correspondingUid || ''
+      };
+    }
+
+    function findImportPreviewItem(rowId) {
+      const items = state.importPreview && state.importPreview.items ? state.importPreview.items : [];
+
+      for (let i = 0; i < items.length; i++) {
+        if (String(items[i].rowId) === String(rowId)) {
+          return items[i];
+        }
+      }
+
+      return null;
+    }
+
+    function buildImportStatusSelect(item) {
+      const d = item.data || {};
+      const value = d['啟用狀態'] === '停用' ? '停用' : '啟用';
+      const disabled = item.defaultAction === 'ERROR' ? ' disabled' : '';
+
+      let html = '<select class="import-status-select" id="importStatus_' + escapeAttr(item.rowId) + '" onchange="handleImportStatusChange(\'' + escapeAttr(item.rowId) + '\')" ' + disabled + '>';
+      html += '<option value="啟用"' + selectedAttr(value, '啟用') + '>啟用</option>';
+      html += '<option value="停用"' + selectedAttr(value, '停用') + '>停用</option>';
+      html += '</select>';
+
+      return html;
+    }
+
+    function buildImportStopReasonSelect(item) {
+      const d = item.data || {};
+      const status = d['啟用狀態'] === '停用' ? '停用' : '啟用';
+      const value = d['停用原因'] || '';
+      const disabled = status !== '停用' || item.defaultAction === 'ERROR' ? ' disabled' : '';
+      const reasons = state.settings['停用原因'] || ['已畢業', '無效名單'];
+
+      let html = '<select class="import-stop-reason-select" id="importStopReason_' + escapeAttr(item.rowId) + '" onchange="handleImportStatusChange(\'' + escapeAttr(item.rowId) + '\')" ' + disabled + '>';
+      html += '<option value=""' + selectedAttr(value, '') + '></option>';
+
+      reasons.forEach(function(reason) {
+        if (!reason) return;
+        html += '<option value="' + escapeAttr(reason) + '"' + selectedAttr(value, reason) + '>' + escapeHtml(reason) + '</option>';
+      });
+
+      html += '</select>';
+
+      return html;
+    }
+
+    function handleImportStatusChange(rowId) {
+      const item = findImportPreviewItem(rowId);
+      const statusEl = document.getElementById('importStatus_' + rowId);
+      const reasonEl = document.getElementById('importStopReason_' + rowId);
+
+      if (!item || !item.data || !statusEl) return;
+
+      item.data['啟用狀態'] = statusEl.value === '停用' ? '停用' : '啟用';
+
+      if (item.data['啟用狀態'] === '停用') {
+        if (reasonEl) {
+          reasonEl.disabled = false;
+
+          if (!reasonEl.value) {
+            reasonEl.value = getDefaultStopReason();
+          }
+
+          item.data['停用原因'] = reasonEl.value || getDefaultStopReason();
+        } else {
+          item.data['停用原因'] = item.data['停用原因'] || getDefaultStopReason();
+        }
+      } else {
+        item.data['停用原因'] = '';
+
+        if (reasonEl) {
+          reasonEl.value = '';
+          reasonEl.disabled = true;
+        }
+      }
+    }
+
+    function updateImportStopReasonState(rowId) {
+      const item = findImportPreviewItem(rowId);
+      const statusEl = document.getElementById('importStatus_' + rowId);
+      const reasonEl = document.getElementById('importStopReason_' + rowId);
+
+      if (!item || !statusEl || !reasonEl) return;
+
+      reasonEl.disabled = statusEl.value !== '停用' || item.defaultAction === 'ERROR';
+    }
+
+    function getDefaultStopReason() {
+      const reasons = state.settings['停用原因'] || ['無效名單'];
+
+      if (reasons.indexOf('無效名單') >= 0) return '無效名單';
+      if (reasons.length) return reasons[0];
+
+      return '無效名單';
+    }
+
+    function handleImportDecisionChange(rowId) {
+      const actionEl = document.getElementById('importAction_' + rowId);
+      const uidEl = document.getElementById('importUid_' + rowId);
+
+      state.importDecisions[rowId] = {
+        action: actionEl ? actionEl.value : 'SKIP',
+        uid: uidEl ? uidEl.value : ''
+      };
+
+      updateImportCandidateSelectState(rowId);
+    }
+
+    function buildCandidateDetail(item) {
+      if (item.status === '錯誤') {
+        return '<div class="import-error-detail">' + escapeHtml(item.error || '資料錯誤') + '</div>';
+      }
+
+      const candidates = item.candidates || [];
+
+      if (!candidates.length) {
+        return '<span class="import-muted">無疑似同人</span>';
+      }
+
+      let html = '<div class="candidate-detail">';
+
+      candidates.forEach(function(c, index) {
+        const gradeText = isGraduate(c['現在學制']) ? '' : (c['現在年級'] || '');
+        const stopText = c['啟用狀態'] === '停用' && c['停用原因'] ? '停用原因：' + c['停用原因'] : '';
+
+        const meta = [
+          c['性別'] || '',
+          displaySystem(c['現在學制']) + gradeText,
+          (c['照顧區'] || '') + (c['大區'] || ''),
+          c['排數'] || '',
+          c['身分'] || '',
+          c['啟用狀態'] || '',
+          stopText
+        ].filter(function(value) {
+          return String(value || '').trim() !== '';
+        }).join('｜');
+
+        html += '<div class="candidate-card">';
+        html += '<div class="candidate-title">' + (index + 1) + '. ' + escapeHtml(c['姓名'] || '') + '｜相似度 ' + escapeHtml(c.similarityScore || 0) + '% '+ '</div>';
+        html += '<div class="candidate-meta">' + escapeHtml(meta) + '</div>';
+        html += '<div class="candidate-reason">理由：' + escapeHtml((c.similarityReasons || []).join('、') || '未提供') + '</div>';
+        html += '</div>';
+      });
+
+      html += '</div>';
+      return html;
+    }
+
+    function buildImportActionSelect(item) {
+      const disabled = item.defaultAction === 'ERROR' ? ' disabled' : '';
+      const decision = getImportDecision(item);
+      const value = decision.action || item.defaultAction || 'SKIP';
+
+      let html = '<select class="import-action" id="importAction_' + escapeAttr(item.rowId) + '" onchange="handleImportDecisionChange(\'' + escapeAttr(item.rowId) + '\')" ' + disabled + '>';
+
+      if (item.defaultAction === 'ERROR') {
+        html += '<option value="ERROR" selected>錯誤不匯入</option>';
+      } else {
+        html += '<option value="CREATE"' + selectedAttr(value, 'CREATE') + '>' + (item.candidates && item.candidates.length ? '新增為不同人' : '新增') + '</option>';
+        html += '<option value="UPDATE"' + selectedAttr(value, 'UPDATE') + '>更新既有</option>';
+        html += '<option value="SKIP"' + selectedAttr(value, 'SKIP') + '>跳過</option>';
+      }
+
+      html += '</select>';
+
+      return html;
+    }
+
+    function buildCandidateSelect(item) {
+      const candidates = item.candidates || [];
+      const decision = getImportDecision(item);
+      let html = '<select class="candidate-select" id="importUid_' + escapeAttr(item.rowId) + '" onchange="handleImportDecisionChange(\'' + escapeAttr(item.rowId) + '\')">';
+
+      if (!candidates.length) {
+        html += '<option value="">無候選對象</option>';
+      } else {
+        candidates.forEach(function(c, index) {
+          const gradeText = isGraduate(c['現在學制']) ? '' : (c['現在年級'] || '');
+          const stopText = c['啟用狀態'] === '停用' && c['停用原因'] ? '／' + c['停用原因'] : '';
+          const text = (index + 1) + '. ' + c['姓名'] + '｜' + displaySystem(c['現在學制']) + gradeText + '｜' + c['照顧區'] + c['大區'] + '｜' + c['啟用狀態'] + stopText + '｜相似度 ' + c.similarityScore;
+
+          html += '<option value="' + escapeAttr(c.UID) + '"' + selectedAttr(decision.uid || item.correspondingUid, c.UID) + '>' + escapeHtml(text) + '</option>';
+        });
+      }
+
+      html += '</select>';
+
+      return html;
+    }
+
+    function selectedAttr(value, target) {
+      return String(value) === String(target) ? ' selected' : '';
+    }
+
+    function buildCandidateReasonText(item) {
+      const candidates = item.candidates || [];
+
+      if (!candidates.length) return '';
+
+      const first = candidates[0];
+
+      return '候選：' + (first['姓名'] || '') + '｜' + ((first.similarityReasons || []).join('、'));
+    }
+
+    function updateImportCandidateSelectState(rowId) {
+      const actionEl = document.getElementById('importAction_' + rowId);
+      const uidEl = document.getElementById('importUid_' + rowId);
+
+      if (!actionEl || !uidEl) return;
+
+      uidEl.disabled = actionEl.value !== 'UPDATE';
+
+      if (actionEl.value === 'UPDATE' && !uidEl.value) {
+        const firstOption = uidEl.querySelector('option[value]:not([value=""])');
+        if (firstOption) {
+          uidEl.value = firstOption.value;
+        }
+      }
+
+      state.importDecisions[rowId] = {
+        action: actionEl.value,
+        uid: uidEl.value || ''
+      };
+    }
+
+    function collectImportDecisions() {
+      const result = {};
+      const items = state.importPreview && state.importPreview.items ? state.importPreview.items : [];
+
+      items.forEach(function(item) {
+        const actionEl = document.getElementById('importAction_' + item.rowId);
+        const uidEl = document.getElementById('importUid_' + item.rowId);
+        const saved = state.importDecisions[item.rowId] || {};
+
+        result[item.rowId] = {
+          action: actionEl ? actionEl.value : (saved.action || item.defaultAction),
+          uid: uidEl ? uidEl.value : (saved.uid || item.correspondingUid || '')
+        };
+      });
+
+      return result;
+    }
+
+    function confirmImport() {
+      if (!state.importPreview || !state.importPreview.items) {
+        alert('沒有可匯入的預覽資料');
+        return;
+      }
+
+      const decisions = collectImportDecisions();
+      const counts = {
+        create: 0,
+        update: 0,
+        skip: 0,
+        error: 0
+      };
+
+      Object.keys(decisions).forEach(function(rowId) {
+        const action = decisions[rowId].action;
+
+        if (action === 'CREATE') counts.create++;
+        else if (action === 'UPDATE') counts.update++;
+        else if (action === 'ERROR') counts.error++;
+        else counts.skip++;
+      });
+
+      const confirmText =
+        '確定執行匯入？\n\n' +
+        '新增：' + counts.create + ' 筆\n' +
+        '更新：' + counts.update + ' 筆\n' +
+        '跳過：' + counts.skip + ' 筆\n' +
+        '錯誤：' + counts.error + ' 筆';
+
+      if (!confirm(confirmText)) return;
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+
+          if (!res || !res.success) {
+            alert('匯入失敗');
+            return;
+          }
+
+          closeImportModal();
+
+          showToast('匯入完成：新增 ' + (res.addCount || 0) + '、更新 ' + (res.updateCount || 0) + '、跳過 ' + (res.skipCount || 0) + '、錯誤 ' + (res.errorCount || 0));
+
+          searchMembers(0);
+        })
+        .withFailureHandler(handleError)
+        .confirmBatchImport(state.importPreview.items, decisions, state.importFileName);
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').style.display = 'none';
+      state.importPreview = null;
+      state.importFileName = '';
+      state.importFilter = 'ALL';
+      state.importDecisions = {};
+      document.getElementById('importPreviewTable').innerHTML = '';
+      document.getElementById('importSummary').innerHTML = '';
+    }
+
+    function fillOptions() {
+      fillSelect('formGender', state.settings['性別'] || ['男', '女'], true, '');
+      fillSelect('formIdentity', state.settings['身分'] || [], true, '');
+      fillSelect('formStopReason', state.settings['停用原因'] || ['已畢業', '無效名單'], true, '');
+      fillSelect('statusReason', state.settings['停用原因'] || ['已畢業', '無效名單'], false, '');
+
+      fillSystemSelect('formSystem', true, '', false);
+      fillSystemSelect('filterSystem', true, '全部', true);
+
+      fillCareAreaSelect('filterCareArea', true, '全部');
+      fillCareAreaSelect('formCareArea', true, '');
+
+      updateFilterBigAreaOptions('', '', false);
+      updateFormBigAreaOptions('', '');
+      updateFilterGradeOptions('', '', false);
+      updateFormGradeOptions('', '');
+      fillRankSelect();
+    }
+
+    function fillSelect(id, list, allowBlank, blankText) {
+      const el = document.getElementById(id);
+      const currentValue = el.value;
+
+      el.innerHTML = '';
+
+      if (allowBlank) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = blankText || '';
+        el.appendChild(option);
+      }
+
+      (list || []).forEach(function(value) {
+        if (!value) return;
+
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        el.appendChild(option);
+      });
+
+      if (currentValue) {
+        el.value = currentValue;
+      }
+    }
+
+    function fillSystemSelect(id, allowBlank, blankText, filterMode) {
+      const systems = state.settings['學制'] || ['未知', '國小', '國中', '高中', '五專', '大學', '已畢業'];
+      const el = document.getElementById(id);
+      const currentValue = el.value;
+
+      el.innerHTML = '';
+
+      if (allowBlank) {
+        const blank = document.createElement('option');
+        blank.value = '';
+        blank.textContent = blankText || '';
+        el.appendChild(blank);
+      }
+
+      systems.forEach(function(system) {
+        if (!system) return;
+
+        if (filterMode && (system === '國小' || system === '大學')) {
+          return;
+        }
+
+        const option = document.createElement('option');
+        option.value = system;
+        option.textContent = displaySystem(system);
+        el.appendChild(option);
+      });
+
+      if (currentValue) {
+        el.value = currentValue;
+      }
+    }
+
+    function fillRankSelect() {
+      const el = document.getElementById('filterRank');
+
+      if (!el) return;
+
+      const currentValue = el.value;
+
+      el.innerHTML = '';
+
+      const blank = document.createElement('option');
+      blank.value = '';
+      blank.textContent = '全部';
+      el.appendChild(blank);
+
+      (state.rankOptions || []).forEach(function(rank) {
+        const option = document.createElement('option');
+        option.value = rank;
+        option.textContent = rank;
+        el.appendChild(option);
+      });
+
+      if (currentValue) {
+        el.value = currentValue;
+      }
+    }
+
+    function fillCareAreaSelect(id, allowBlank, blankText) {
+      const el = document.getElementById(id);
+      const currentValue = el.value;
+
+      el.innerHTML = '';
+
+      if (allowBlank) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = blankText || '';
+        el.appendChild(option);
+      }
+
+      const careAreas = getCareAreaValues();
+
+      careAreas.forEach(function(value) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        el.appendChild(option);
+      });
+
+      if (currentValue) {
+        el.value = currentValue;
+      }
+    }
+
+    function getCareAreaValues() {
+      const fromSettings = (state.areas.careAreas || []).map(function(item) {
+        return item.careArea;
+      });
+
+      const set = {};
+
+      fromSettings.forEach(function(value) {
+        value = String(value || '').trim();
+
+        if (value) set[value] = true;
+      });
+
+      const values = Object.keys(set);
+
+      values.sort(function(a, b) {
+        return getCareAreaSort(a) - getCareAreaSort(b) || a.localeCompare(b, 'zh-Hant');
+      });
+
+      return values;
+    }
+
+    function getBigAreaValuesByCareArea(careArea) {
+      if (!careArea) return [];
+
+      const list = [];
+
+      (state.areas.bigAreas || []).forEach(function(item) {
+        if (!item.bigArea) return;
+
+        if (item.careArea === careArea) {
+          list.push({
+            value: item.bigArea,
+            sort: Number(item.sort || 999999)
+          });
+        }
+      });
+
+      const map = {};
+
+      list.forEach(function(item) {
+        if (!map[item.value]) {
+          map[item.value] = item;
+        } else if (item.sort < map[item.value].sort) {
+          map[item.value] = item;
+        }
+      });
+
+      return Object.keys(map)
+        .map(function(key) {
+          return map[key];
+        })
+        .sort(function(a, b) {
+          if (a.sort !== b.sort) return a.sort - b.sort;
+          return a.value.localeCompare(b.value, 'zh-Hant');
+        })
+        .map(function(item) {
+          return item.value;
+        });
+    }
+
+    function updateFilterBigAreaOptions(selectedCareArea, selectedBigArea, keepCurrent) {
+      const careArea = selectedCareArea !== undefined ? selectedCareArea : getValue('filterCareArea');
+      const el = document.getElementById('filterBigArea');
+      const currentValue = keepCurrent ? el.value : '';
+      const targetValue = selectedBigArea !== undefined ? selectedBigArea : currentValue;
+
+      el.innerHTML = '';
+
+      if (!careArea) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '請先選照顧區';
+        el.appendChild(option);
+        el.disabled = true;
+        return;
+      }
+
+      el.disabled = false;
+
+      const blankOption = document.createElement('option');
+      blankOption.value = '';
+      blankOption.textContent = '全部';
+      el.appendChild(blankOption);
+
+      const bigAreas = getBigAreaValuesByCareArea(careArea);
+
+      bigAreas.forEach(function(value) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        el.appendChild(option);
+      });
+
+      if (targetValue && bigAreas.indexOf(targetValue) >= 0) {
+        el.value = targetValue;
+      } else {
+        el.value = '';
+      }
+    }
+
+    function updateFormBigAreaOptions(selectedCareArea, selectedBigArea) {
+      const careArea = selectedCareArea !== undefined ? selectedCareArea : getValue('formCareArea');
+      const el = document.getElementById('formBigArea');
+      const targetValue = selectedBigArea !== undefined ? selectedBigArea : el.value;
+
+      el.innerHTML = '';
+
+      if (!careArea) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '請先選照顧區';
+        el.appendChild(option);
+        el.disabled = true;
+        return;
+      }
+
+      el.disabled = false;
+
+      const blankOption = document.createElement('option');
+      blankOption.value = '';
+      blankOption.textContent = '';
+      el.appendChild(blankOption);
+
+      const bigAreas = getBigAreaValuesByCareArea(careArea);
+
+      bigAreas.forEach(function(value) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        el.appendChild(option);
+      });
+
+      if (targetValue && bigAreas.indexOf(targetValue) >= 0) {
+        el.value = targetValue;
+      } else {
+        el.value = '';
+      }
+    }
+
+    function updateFilterGradeOptions(selectedSystem, selectedGrade, keepCurrent) {
+      const system = selectedSystem !== undefined ? selectedSystem : getValue('filterSystem');
+      const el = document.getElementById('filterGrade');
+      const currentValue = keepCurrent ? el.value : '';
+      const targetValue = selectedGrade !== undefined ? selectedGrade : currentValue;
+
+      el.innerHTML = '';
+
+      if (!system) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '請先選學制';
+        el.appendChild(option);
+        el.disabled = true;
+        return;
+      }
+
+      if (isGraduate(system)) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '';
+        el.appendChild(option);
+        el.value = '';
+        el.disabled = true;
+        return;
+      }
+
+      el.disabled = false;
+
+      const blankOption = document.createElement('option');
+      blankOption.value = '';
+      blankOption.textContent = '全部';
+      el.appendChild(blankOption);
+
+      const grades = state.gradeMap[system] || [];
+
+      grades.forEach(function(value) {
+        if (value === '已畢業') return;
+
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        el.appendChild(option);
+      });
+
+      if (targetValue && grades.indexOf(targetValue) >= 0) {
+        el.value = targetValue;
+      } else {
+        el.value = '';
+      }
+    }
+
+    function updateFormGradeOptions(selectedSystem, selectedGrade) {
+      const system = selectedSystem !== undefined ? selectedSystem : getValue('formSystem');
+      const el = document.getElementById('formGrade');
+      const targetValue = selectedGrade !== undefined ? selectedGrade : el.value;
+
+      el.innerHTML = '';
+
+      if (!system) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '請先選學制';
+        el.appendChild(option);
+        el.disabled = true;
+        return;
+      }
+
+      if (isGraduate(system)) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '';
+        el.appendChild(option);
+        el.value = '';
+        el.disabled = true;
+        return;
+      }
+
+      el.disabled = false;
+
+      const grades = state.gradeMap[system] || [];
+
+      grades.forEach(function(value) {
+        if (value === '已畢業') return;
+
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        el.appendChild(option);
+      });
+
+      if (targetValue && grades.indexOf(targetValue) >= 0) {
+        el.value = targetValue;
+      } else {
+        el.value = grades[0] || '';
+      }
+    }
+
+    function handleFilterCareAreaChange() {
+      updateFilterBigAreaOptions(getValue('filterCareArea'), '', false);
+    }
+
+    function handleFormCareAreaChange() {
+      updateFormBigAreaOptions(getValue('formCareArea'), '');
+    }
+
+    function handleFilterSystemChange() {
+      updateFilterGradeOptions(getValue('filterSystem'), '', false);
+    }
+
+    function handleFormSystemChange() {
+      updateFormGradeOptions(getValue('formSystem'), '');
+    }
+
+    function getCareAreaSort(careArea) {
+      const item = (state.areas.careAreas || []).find(function(row) {
+        return row.careArea === careArea;
+      });
+
+      return item ? Number(item.sort || 999999) : 999999;
+    }
+
+    function getBigAreaSort(careArea, bigArea) {
+      const item = (state.areas.bigAreas || []).find(function(row) {
+        return row.careArea === careArea && row.bigArea === bigArea;
+      });
+
+      return item ? Number(item.sort || 999999) : 999999;
+    }
+
+    function renderMembers() {
+      const rows = state.members || [];
+      const start = state.query.total ? state.query.offset + 1 : 0;
+      const end = Math.min(state.query.offset + rows.length, state.query.total);
+
+      document.getElementById('memberCount').textContent =
+        state.query.total
+          ? '第 ' + start + '–' + end + ' 筆｜共 ' + state.query.total + ' 筆'
+          : '0 筆';
+
+      const wrap = document.getElementById('memberTableWrap');
+
+      if (!rows.length) {
+        wrap.innerHTML = '<div class="empty">沒有符合條件的名單</div>';
+        return;
+      }
+
+      let html = '';
+      html += '<table class="member-table">';
+      html += '<colgroup>';
+      html += '<col class="col-status">';
+      html += '<col class="col-member-type">';
+      html += '<col class="col-rank">';
+      html += '<col class="col-care-area">';
+      html += '<col class="col-big-area">';
+      html += '<col class="col-name">';
+      html += '<col class="col-gender">';
+      html += '<col class="col-system">';
+      html += '<col class="col-grade">';
+      html += '<col class="col-identity">';
+      html += '<col class="col-junior">';
+      html += '<col class="col-high">';
+      html += '<col class="col-university">';
+      html += '<col class="col-actions">';
+      html += '</colgroup>';
+      html += '<thead><tr>';
+      html += '<th>狀態</th>';
+      html += '<th>中學生/歷高畢</th>';
+      html += '<th>排數</th>';
+      html += '<th>照顧區</th>';
+      html += '<th>大區</th>';
+      html += '<th>姓名</th>';
+      html += '<th>性別</th>';
+      html += '<th>學制</th>';
+      html += '<th>年級</th>';
+      html += '<th>身分</th>';
+      html += '<th>國中</th>';
+      html += '<th>高中／五專</th>';
+      html += '<th>大學／研究所</th>';
+      html += '<th>操作</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+
+      rows.forEach(function(m) {
+        const statusClass = m['啟用狀態'] === '啟用' ? 'ok' : 'off';
+        const memberType = displayMemberType(m);
+        const memberTypeClass = memberType === '中學生' ? 'mid' : (memberType === '歷高畢' ? 'warn' : '');
+
+        html += '<tr>';
+
+        html += '<td><span class="badge ' + statusClass + '">' + escapeHtml(m['啟用狀態'] || '') + '</span>' +
+          (m['停用原因'] ? '<br><span class="badge off">' + escapeHtml(m['停用原因']) + '</span>' : '') +
+          '</td>';
+
+        html += '<td>' + (memberType ? '<span class="badge ' + memberTypeClass + '">' + escapeHtml(memberType) + '</span>' : '') + '</td>';
+        html += '<td>' + escapeHtml(m['排數']) + '</td>';
+        html += '<td>' + escapeHtml(m['照顧區']) + '</td>';
+        html += '<td>' + escapeHtml(m['大區']) + '</td>';
+        html += '<td>' + escapeHtml(m['姓名']) + '</td>';
+        html += '<td>' + escapeHtml(m['性別']) + '</td>';
+        html += '<td>' + escapeHtml(isGraduate(m['現在學制']) ? '' : displaySystem(m['現在學制'])) + '</td>';
+        html += '<td>' + escapeHtml(isGraduate(m['現在學制']) ? '' : displayGrade(m)) + '</td>';
+        html += '<td>' + escapeHtml(m['身分']) + '</td>';
+        html += buildSchoolCell(m['國中校名']);
+        html += buildSchoolCell(m['高中五專校名']);
+        html += buildSchoolCell(m['大學校名']);
+
+        html += '<td><div class="actions">';
+        html += '<button class="btn small" onclick="openMemberModal(\'' + escapeAttr(m['UID']) + '\')">編輯</button>';
+        html += '<button class="btn secondary small" onclick="openNoteModal(\'' + escapeAttr(m['UID']) + '\')">備註</button>';
+        html += '<button class="btn danger small" onclick="openStatusModal(\'' + escapeAttr(m['UID']) + '\')">啟停</button>';
+        html += '</div></td>';
+
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+    }
+
+    function buildSchoolCell(value) {
+      const text = escapeHtml(value);
+      const attr = escapeAttr(value);
+
+      return '<td class="school-cell" data-tooltip="' + attr + '" title="' + attr + '"><span class="cell-text">' + text + '</span></td>';
+    }
+
+    function displaySystem(system) {
+      return isGraduate(system) ? '歷高畢' : (system || '');
+    }
+
+    function displayGrade(memberOrGrade) {
+      if (typeof memberOrGrade === 'object') {
+        return isGraduate(memberOrGrade['現在學制']) ? '' : (memberOrGrade['現在年級'] || '');
+      }
+
+      return memberOrGrade || '';
+    }
+
+    function displayMemberType(member) {
+      if (isGraduate(member['現在學制'])) {
+        return '歷高畢';
+      }
+
+      return member['是否中學生'] === '是' ? '中學生' : '';
+    }
+
+    function isGraduate(system) {
+      return system === '已畢業' || system === '歷高畢';
+    }
+
+    function openMemberModal(uid) {
+      state.editingUid = uid || null;
+
+      document.getElementById('memberModalTitle').textContent = uid ? '編輯名單' : '新增名單';
+
+      clearMemberForm();
+
+      if (uid) {
+        const m = findMember(uid);
+
+        if (!m) {
+          alert('找不到名單，請重新查詢');
+          return;
+        }
+
+        setValue('formName', m['姓名']);
+        setValue('formGender', m['性別']);
+        setValue('formSystem', m['現在學制']);
+        updateFormGradeOptions(m['現在學制'], isGraduate(m['現在學制']) ? '' : m['現在年級']);
+        setValue('formCareArea', m['照顧區']);
+        updateFormBigAreaOptions(m['照顧區'], m['大區']);
+        setValue('formIdentity', m['身分']);
+        setValue('formGraduationYear', m['預計高中畢業年份']);
+        setValue('formStatus', m['啟用狀態'] || '啟用');
+        setValue('formStopReason', m['停用原因']);
+        setValue('formJuniorSchool', m['國中校名']);
+        setValue('formHighCollegeSchool', m['高中五專校名']);
+        setValue('formUniversity', m['大學校名']);
+        setValue('formAutoUpgrade', String(m['自動升級']).toUpperCase() === 'FALSE' ? 'FALSE' : 'TRUE');
+      } else {
+        updateFormGradeOptions('', '');
+        updateFormBigAreaOptions('', '');
+      }
+
+      handleStatusChangeInForm();
+
+      document.getElementById('memberModal').style.display = 'block';
+    }
+
+    function closeMemberModal() {
+      document.getElementById('memberModal').style.display = 'none';
+      state.editingUid = null;
+    }
+
+    function clearMemberForm() {
+      setValue('formName', '');
+      setValue('formGender', '');
+      setValue('formSystem', '');
+      setValue('formGrade', '');
+      setValue('formCareArea', '');
+      setValue('formBigArea', '');
+      setValue('formIdentity', '');
+      setValue('formGraduationYear', '');
+      setValue('formStatus', '啟用');
+      setValue('formStopReason', '');
+      setValue('formJuniorSchool', '');
+      setValue('formHighCollegeSchool', '');
+      setValue('formUniversity', '');
+      setValue('formAutoUpgrade', 'TRUE');
+      setValue('formNote', '');
+    }
+
+    function collectMemberForm() {
+      const system = getValue('formSystem');
+
+      return {
+        '姓名': getValue('formName'),
+        '性別': getValue('formGender'),
+        '現在學制': system,
+        '現在年級': isGraduate(system) ? '' : getValue('formGrade'),
+        '照顧區': getValue('formCareArea'),
+        '大區': getValue('formBigArea'),
+        '身分': getValue('formIdentity'),
+        '預計高中畢業年份': getValue('formGraduationYear'),
+        '啟用狀態': getValue('formStatus'),
+        '停用原因': getValue('formStatus') === '停用' ? getValue('formStopReason') : '',
+        '國中校名': getValue('formJuniorSchool'),
+        '高中五專校名': getValue('formHighCollegeSchool'),
+        '大學校名': getValue('formUniversity'),
+        '自動升級': getValue('formAutoUpgrade')
+      };
+    }
+
+    function submitMember() {
+      const data = collectMemberForm();
+      const note = getValue('formNote');
+
+      if (!data['姓名'].trim()) {
+        alert('姓名不可空白');
+        return;
+      }
+
+      if (!data['現在學制']) {
+        alert('請先選擇現在學制');
+        return;
+      }
+
+      if (!data['現在年級'] && !isGraduate(data['現在學制']) && data['現在學制'] !== '未知') {
+        alert('請先選擇現在年級');
+        return;
+      }
+
+      showLoading();
+
+      if (state.editingUid) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            hideLoading();
+            showToast(res.message || '更新完成');
+            closeMemberModal();
+            searchMembers(state.query.offset || 0);
+          })
+          .withFailureHandler(handleError)
+          .updateMember(state.editingUid, data, note);
+
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+
+          const candidates = res.candidates || [];
+
+          if (candidates.length) {
+            state.pendingCreateData = data;
+            state.pendingCreateNote = note;
+            showSimilarModal(candidates);
+          } else {
+            createMemberDirectly(data, note);
+          }
+        })
+        .withFailureHandler(handleError)
+        .checkSimilarMembers(data);
+    }
+
+    function createMemberDirectly(data, note) {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          showToast(res.message || '新增完成');
+          closeMemberModal();
+          closeSimilarModal();
+          searchMembers(0);
+        })
+        .withFailureHandler(handleError)
+        .createMember(data, note);
+    }
+
+    function showSimilarModal(candidates) {
+      const list = document.getElementById('similarList');
+
+      let html = '';
+      html += '<table>';
+      html += '<thead><tr>';
+      html += '<th>操作</th>';
+      html += '<th>相似度</th>';
+      html += '<th>判定理由</th>';
+      html += '<th>姓名</th>';
+      html += '<th>性別</th>';
+      html += '<th>學制</th>';
+      html += '<th>年級</th>';
+      html += '<th>照顧區</th>';
+      html += '<th>大區</th>';
+      html += '<th>排數</th>';
+      html += '<th>狀態</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+
+      candidates.forEach(function(c) {
+        html += '<tr>';
+        html += '<td><button class="btn small" onclick="confirmSamePersonClient(\'' + escapeAttr(c.UID) + '\')">同一人更新</button></td>';
+        html += '<td>' + escapeHtml(c.similarityScore) + '</td>';
+        html += '<td>' + escapeHtml((c.similarityReasons || []).join('、')) + '</td>';
+        html += '<td>' + escapeHtml(c['姓名']) + '</td>';
+        html += '<td>' + escapeHtml(c['性別']) + '</td>';
+        html += '<td>' + escapeHtml(displaySystem(c['現在學制'])) + '</td>';
+        html += '<td>' + escapeHtml(isGraduate(c['現在學制']) ? '' : c['現在年級']) + '</td>';
+        html += '<td>' + escapeHtml(c['照顧區']) + '</td>';
+        html += '<td>' + escapeHtml(c['大區']) + '</td>';
+        html += '<td>' + escapeHtml(c['排數']) + '</td>';
+        html += '<td>' + escapeHtml(c['啟用狀態']) + (c['停用原因'] ? '／' + escapeHtml(c['停用原因']) : '') + '</td>';
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+
+      list.innerHTML = html;
+      document.getElementById('similarModal').style.display = 'block';
+    }
+
+    function closeSimilarModal() {
+      document.getElementById('similarModal').style.display = 'none';
+      state.pendingCreateData = null;
+      state.pendingCreateNote = '';
+    }
+
+    function confirmSamePersonClient(uid) {
+      if (!state.pendingCreateData) {
+        alert('沒有待確認資料');
+        return;
+      }
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          showToast(res.message || '已更新既有名單');
+          closeSimilarModal();
+          closeMemberModal();
+          searchMembers(0);
+        })
+        .withFailureHandler(handleError)
+        .confirmSamePerson(uid, state.pendingCreateData, state.pendingCreateNote);
+    }
+
+    function forceCreateDifferentPerson() {
+      if (!state.pendingCreateData) {
+        alert('沒有待新增資料');
+        return;
+      }
+
+      createMemberDirectly(state.pendingCreateData, state.pendingCreateNote);
+    }
+
+    function openNoteModal(uid) {
+      const m = findMember(uid);
+
+      if (!m) {
+        alert('找不到名單');
+        return;
+      }
+
+      state.noteUid = uid;
+      document.getElementById('noteModalTitle').textContent = '備註紀錄｜' + m['姓名'];
+      setValue('newNoteText', '');
+      document.getElementById('noteList').innerHTML = '<div class="empty">讀取中...</div>';
+      document.getElementById('noteModal').style.display = 'block';
+
+      google.script.run
+        .withSuccessHandler(function(notes) {
+          renderNotes(notes || []);
+        })
+        .withFailureHandler(handleError)
+        .getNotesByUid(uid);
+    }
+
+    function closeNoteModal() {
+      document.getElementById('noteModal').style.display = 'none';
+      state.noteUid = null;
+    }
+
+    function renderNotes(notes) {
+      const box = document.getElementById('noteList');
+
+      if (!notes.length) {
+        box.innerHTML = '<div class="empty">目前沒有備註</div>';
+        return;
+      }
+
+      box.innerHTML = notes.map(function(note) {
+        return '' +
+          '<div class="note-item">' +
+          '<div class="note-time">' + escapeHtml(note['建立時間'] || '') + '</div>' +
+          '<div>' + escapeHtml(note['備註內容'] || '').replace(/\n/g, '<br>') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function submitNote() {
+      const text = getValue('newNoteText');
+
+      if (!state.noteUid) {
+        alert('缺少 UID');
+        return;
+      }
+
+      if (!text.trim()) {
+        alert('備註不可空白');
+        return;
+      }
+
+      const currentUid = state.noteUid;
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          showToast(res.message || '備註已新增');
+          openNoteModal(currentUid);
+        })
+        .withFailureHandler(handleError)
+        .addNote(currentUid, text);
+    }
+
+    function openStatusModal(uid) {
+      const m = findMember(uid);
+
+      if (!m) {
+        alert('找不到名單');
+        return;
+      }
+
+      state.statusUid = uid;
+
+      document.getElementById('statusModalTitle').textContent = '切換狀態｜' + m['姓名'];
+
+      const nextStatus = m['啟用狀態'] === '啟用' ? '停用' : '啟用';
+
+      setValue('statusNewValue', nextStatus);
+      setValue('statusReason', nextStatus === '停用' ? '無效名單' : '');
+      setValue('statusNote', '');
+
+      handleStatusModalChange();
+
+      document.getElementById('statusModal').style.display = 'block';
+    }
+
+    function closeStatusModal() {
+      document.getElementById('statusModal').style.display = 'none';
+      state.statusUid = null;
+    }
+
+    function handleStatusModalChange() {
+      const status = getValue('statusNewValue');
+      document.getElementById('statusReason').disabled = status !== '停用';
+    }
+
+    function handleStatusChangeInForm() {
+      const status = getValue('formStatus');
+      document.getElementById('formStopReason').disabled = status !== '停用';
+    }
+
+    function submitStatusChange() {
+      if (!state.statusUid) {
+        alert('缺少 UID');
+        return;
+      }
+
+      const status = getValue('statusNewValue');
+      const reason = status === '停用' ? getValue('statusReason') : '';
+      const note = getValue('statusNote');
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          showToast(res.message || '狀態已更新');
+          closeStatusModal();
+          searchMembers(state.query.offset || 0);
+        })
+        .withFailureHandler(handleError)
+        .toggleMemberStatus(state.statusUid, status, reason, note);
+    }
+
+    function previewUpgrade() {
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+
+          const items = res && res.items ? res.items : [];
+          state.upgradePreviewItems = items.map(function(item) {
+            return normalizeUpgradePreviewItem(item);
+          });
+
+          state.upgradeSearchKeyword = '';
+
+          const searchEl = document.getElementById('upgradeSearchKeyword');
+          if (searchEl) {
+            searchEl.value = '';
+          }
+
+          renderUpgradePreview(state.upgradePreviewItems);
+          updateUpgradeSearchInfo();
+
+          document.getElementById('upgradeModal').style.display = 'block';
+        })
+        .withFailureHandler(handleError)
+        .previewAnnualUpgrade();
+    }
+
+    function normalizeUpgradePreviewItem(item) {
+      const copy = Object.assign({}, item || {});
+      let system = normalizeUpgradeSystemValue(copy['新學制'] || '');
+      let grade = copy['新年級'] || '';
+
+      if (!system) {
+        system = deriveUpgradeSystemFromGrade(grade);
+      }
+
+      if (system === '五專' && ['專四', '專五', '已畢業'].indexOf(grade) >= 0) {
+        system = '已畢業';
+        grade = '';
+      }
+
+      if (isGraduate(system)) {
+        grade = '';
+        copy['新狀態'] = copy['新狀態'] || '停用';
+        copy['停用原因'] = copy['停用原因'] || '已畢業';
+      } else {
+        const grades = getUpgradeGradeOptions(system);
+
+        if (grades.indexOf(grade) < 0) {
+          grade = grades[0] || '';
+        }
+
+        copy['新狀態'] = copy['新狀態'] || '啟用';
+
+        if (copy['新狀態'] === '啟用') {
+          copy['停用原因'] = '';
+        } else {
+          copy['停用原因'] = copy['停用原因'] || getUpgradeDefaultStopReason(system);
+        }
+      }
+
+      copy['新學制'] = system;
+      copy['新年級'] = grade;
+
+      return copy;
+    }
+
+    function handleUpgradeSearchInput() {
+      const keyword = getUpgradeSearchKeyword();
+
+      syncAllVisibleUpgradeRows();
+      state.upgradeSearchKeyword = keyword;
+
+      renderUpgradePreview(state.upgradePreviewItems);
+      updateUpgradeSearchInfo();
+    }
+
+    function handleUpgradeSearchKeydown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    }
+
+    function getUpgradeSearchKeyword() {
+      const el = document.getElementById('upgradeSearchKeyword');
+      return el ? String(el.value || '').trim() : '';
+    }
+
+    function getFilteredUpgradeEntries() {
+      const keyword = state.upgradeSearchKeyword || '';
+      const items = state.upgradePreviewItems || [];
+
+      return items
+        .map(function(item, index) {
+          return {
+            item: item,
+            index: index
+          };
+        })
+        .filter(function(entry) {
+          if (!keyword) return true;
+
+          const name = String(entry.item['姓名'] || '');
+          return name.indexOf(keyword) >= 0;
+        });
+    }
+
+    function updateUpgradeSearchInfo() {
+      const info = document.getElementById('upgradeSearchInfo');
+      if (!info) return;
+
+      const total = (state.upgradePreviewItems || []).length;
+      const keyword = state.upgradeSearchKeyword || '';
+      const shown = getFilteredUpgradeEntries().length;
+
+      if (!total) {
+        info.textContent = '尚無資料';
+        return;
+      }
+
+      if (!keyword) {
+        info.textContent = '目前顯示全部 ' + total + ' 筆';
+        return;
+      }
+
+      info.textContent = '搜尋「' + keyword + '」｜顯示 ' + shown + ' / ' + total + ' 筆';
+    }
+
+    function clearUpgradeSearch() {
+      const searchEl = document.getElementById('upgradeSearchKeyword');
+
+      syncAllVisibleUpgradeRows();
+
+      state.upgradeSearchKeyword = '';
+
+      if (searchEl) {
+        searchEl.value = '';
+      }
+
+      renderUpgradePreview(state.upgradePreviewItems);
+      updateUpgradeSearchInfo();
+
+      setTimeout(function() {
+        if (searchEl) searchEl.focus();
+      }, 0);
+    }
+
+    function syncAllVisibleUpgradeRows() {
+      const rows = document.querySelectorAll('#upgradeList tr[data-upgrade-index]');
+
+      rows.forEach(function(row) {
+        const index = Number(row.getAttribute('data-upgrade-index'));
+
+        if (!isNaN(index)) {
+          updateUpgradeRowState(index, true, false);
+        }
+      });
+    }
+
+    function renderUpgradePreview(items) {
+      const box = document.getElementById('upgradeList');
+      const countBox = document.getElementById('upgradeCount');
+      const entries = getFilteredUpgradeEntries();
+      const total = (items || []).length;
+      const keyword = state.upgradeSearchKeyword || '';
+
+      if (!total) {
+        countBox.textContent = '共 0 筆';
+        box.innerHTML = '<div class="empty">沒有需要年度升級的名單</div>';
+        updateUpgradeSearchInfo();
+        return;
+      }
+
+      if (!entries.length) {
+        countBox.textContent = '共 ' + total + ' 筆｜搜尋顯示 0 筆｜表格可上下捲動，標題列已固定。';
+        box.innerHTML = '<div class="empty">找不到符合「' + escapeHtml(keyword) + '」的姓名</div>';
+        updateUpgradeSearchInfo();
+        return;
+      }
+
+      countBox.textContent =
+        keyword
+          ? '共 ' + total + ' 筆｜搜尋顯示 ' + entries.length + ' 筆｜表格可上下捲動，標題列已固定。'
+          : '共 ' + total + ' 筆｜表格可上下捲動，標題列已固定。';
+
+      let html = '';
+      html += '<table class="upgrade-table">';
+      html += '<colgroup>';
+      html += '<col style="width:110px;">';
+      html += '<col style="width:90px;">';
+      html += '<col style="width:90px;">';
+      html += '<col style="width:100px;">';
+      html += '<col style="width:90px;">';
+      html += '<col style="width:130px;">';
+      html += '<col style="width:130px;">';
+      html += '<col style="width:110px;">';
+      html += '<col style="width:130px;">';
+      html += '</colgroup>';
+
+      html += '<thead><tr>';
+      html += '<th>姓名</th>';
+      html += '<th>照顧區</th>';
+      html += '<th>大區</th>';
+      html += '<th>原學制</th>';
+      html += '<th>原年級</th>';
+      html += '<th>新學制</th>';
+      html += '<th>新年級</th>';
+      html += '<th>新狀態</th>';
+      html += '<th>停用原因</th>';
+      html += '</tr></thead>';
+
+      html += '<tbody>';
+
+      entries.forEach(function(entry) {
+        const item = entry.item;
+        const index = entry.index;
+
+        html += '<tr data-upgrade-index="' + index + '">';
+        html += '<td>' + escapeHtml(item['姓名']) + '</td>';
+        html += '<td>' + escapeHtml(item['照顧區']) + '</td>';
+        html += '<td>' + escapeHtml(item['大區']) + '</td>';
+        html += '<td class="upgrade-original">' + escapeHtml(displaySystem(item['原學制'])) + '</td>';
+        html += '<td class="upgrade-original">' + escapeHtml(isGraduate(item['原學制']) ? '' : item['原年級']) + '</td>';
+        html += '<td class="upgrade-new">' + buildUpgradeSystemSelect(index, item['新學制']) + '</td>';
+        html += '<td class="upgrade-new" id="upgradeGradeCell_' + index + '">' + buildUpgradeGradeSelect(index, item['新學制'], item['新年級']) + '</td>';
+        html += '<td class="upgrade-status" id="upgradeStatusCell_' + index + '">' + buildUpgradeStatusSelect(index, item['新狀態']) + '</td>';
+        html += '<td id="upgradeStopReasonCell_' + index + '">' + buildUpgradeStopReasonSelect(index, item['新學制'], item['新狀態'], item['停用原因']) + '</td>';
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+
+      box.innerHTML = html;
+
+      entries.forEach(function(entry) {
+        updateUpgradeRowState(entry.index, true, false);
+      });
+
+      updateUpgradeSearchInfo();
+    }
+
+    function buildUpgradeSystemSelect(index, selectedSystem) {
+      const options = getUpgradeSystemOptions();
+      const normalizedSystem = normalizeUpgradeSystemValue(selectedSystem) || '國中';
+
+      let html = '<select id="upgradeSystem_' + index + '" onchange="handleUpgradeSystemChange(' + index + ')">';
+
+      options.forEach(function(option) {
+        html += '<option value="' + escapeAttr(option.value) + '"' + selectedAttr(normalizedSystem, option.value) + '>' + escapeHtml(option.label) + '</option>';
+      });
+
+      html += '</select>';
+
+      return html;
+    }
+
+    function buildUpgradeGradeSelect(index, selectedSystem, selectedGrade) {
+      const system = normalizeUpgradeSystemValue(selectedSystem);
+      const grades = getUpgradeGradeOptions(system);
+      const disabled = isGraduate(system) ? ' disabled' : '';
+      let value = selectedGrade || '';
+
+      if (isGraduate(system)) {
+        value = '';
+      } else if (grades.indexOf(value) < 0) {
+        value = grades[0] || '';
+      }
+
+      let html = '<select id="upgradeGrade_' + index + '" onchange="handleUpgradeGradeChange(' + index + ')"' + disabled + '>';
+
+      if (isGraduate(system)) {
+        html += '<option value=""></option>';
+      } else {
+        grades.forEach(function(grade) {
+          html += '<option value="' + escapeAttr(grade) + '"' + selectedAttr(value, grade) + '>' + escapeHtml(grade) + '</option>';
+        });
+      }
+
+      html += '</select>';
+
+      return html;
+    }
+
+    function buildUpgradeStatusSelect(index, selectedStatus) {
+      const value = selectedStatus === '停用' ? '停用' : '啟用';
+
+      let html = '<select class="upgrade-status-select" id="upgradeStatus_' + index + '" onchange="handleUpgradeStatusChange(' + index + ')">';
+      html += '<option value="啟用"' + selectedAttr(value, '啟用') + '>啟用</option>';
+      html += '<option value="停用"' + selectedAttr(value, '停用') + '>停用</option>';
+      html += '</select>';
+
+      return html;
+    }
+
+    function buildUpgradeStopReasonSelect(index, selectedSystem, selectedStatus, selectedReason) {
+      const system = normalizeUpgradeSystemValue(selectedSystem);
+      const status = selectedStatus === '停用' ? '停用' : '啟用';
+      const reasons = state.settings['停用原因'] || ['已畢業', '無效名單'];
+      const disabled = status !== '停用' ? ' disabled' : '';
+      let value = status === '停用' ? (selectedReason || getUpgradeDefaultStopReason(system)) : '';
+
+      let html = '<select class="upgrade-stop-reason-select" id="upgradeStopReason_' + index + '" onchange="handleUpgradeStopReasonChange(' + index + ')"' + disabled + '>';
+      html += '<option value=""' + selectedAttr(value, '') + '></option>';
+
+      reasons.forEach(function(reason) {
+        if (!reason) return;
+        html += '<option value="' + escapeAttr(reason) + '"' + selectedAttr(value, reason) + '>' + escapeHtml(reason) + '</option>';
+      });
+
+      html += '</select>';
+
+      return html;
+    }
+
+    function getUpgradeSystemOptions() {
+      return [
+        { value: '國中', label: '國中' },
+        { value: '高中', label: '高中' },
+        { value: '五專', label: '五專' },
+        { value: '已畢業', label: '歷高畢' }
+      ];
+    }
+
+    function getUpgradeGradeOptions(system) {
+      const normalizedSystem = normalizeUpgradeSystemValue(system);
+
+      if (normalizedSystem === '國中') return ['國一', '國二', '國三'];
+      if (normalizedSystem === '高中') return ['高一', '高二', '高三'];
+      if (normalizedSystem === '五專') return ['專一', '專二', '專三'];
+
+      return [];
+    }
+
+    function normalizeUpgradeSystemValue(system) {
+      const text = String(system || '').trim();
+
+      if (text === '歷高畢' || text === '已畢業') return '已畢業';
+      if (text === '國中' || text === '高中' || text === '五專') return text;
+
+      return '';
+    }
+
+    function deriveUpgradeSystemFromGrade(grade) {
+      const text = String(grade || '').trim();
+
+      if (['國一', '國二', '國三'].indexOf(text) >= 0) return '國中';
+      if (['高一', '高二', '高三'].indexOf(text) >= 0) return '高中';
+      if (['專一', '專二', '專三'].indexOf(text) >= 0) return '五專';
+      if (text === '已畢業' || text === '歷高畢' || text === '專四' || text === '專五') return '已畢業';
+
+      return '國中';
+    }
+
+    function getUpgradeDefaultStopReason(system) {
+      const normalizedSystem = normalizeUpgradeSystemValue(system);
+      const reasons = state.settings['停用原因'] || ['已畢業', '無效名單'];
+
+      if (isGraduate(normalizedSystem) && reasons.indexOf('已畢業') >= 0) {
+        return '已畢業';
+      }
+
+      if (reasons.indexOf('無效名單') >= 0) {
+        return '無效名單';
+      }
+
+      return reasons[0] || '無效名單';
+    }
+
+    function getUpgradeDefaultStatusBySystem(system) {
+      return isGraduate(normalizeUpgradeSystemValue(system)) ? '停用' : '啟用';
+    }
+
+    function handleUpgradeSystemChange(index) {
+      const systemEl = document.getElementById('upgradeSystem_' + index);
+      const gradeCell = document.getElementById('upgradeGradeCell_' + index);
+
+      if (!systemEl || !gradeCell) return;
+
+      const system = normalizeUpgradeSystemValue(systemEl.value);
+      gradeCell.innerHTML = buildUpgradeGradeSelect(index, system, '');
+
+      updateUpgradeRowState(index, false, true);
+    }
+
+    function handleUpgradeGradeChange(index) {
+      updateUpgradeRowState(index, false, false);
+    }
+
+    function handleUpgradeStatusChange(index) {
+      updateUpgradeRowState(index, true, false);
+    }
+
+    function handleUpgradeStopReasonChange(index) {
+      updateUpgradeRowState(index, true, false);
+    }
+
+    function updateUpgradeRowState(index, keepCurrentGrade, resetStatusBySystem) {
+      const item = state.upgradePreviewItems[index];
+
+      if (!item) return;
+
+      const systemEl = document.getElementById('upgradeSystem_' + index);
+      const gradeEl = document.getElementById('upgradeGrade_' + index);
+      const statusEl = document.getElementById('upgradeStatus_' + index);
+      const reasonEl = document.getElementById('upgradeStopReason_' + index);
+      const statusCell = document.getElementById('upgradeStatusCell_' + index);
+      const reasonCell = document.getElementById('upgradeStopReasonCell_' + index);
+
+      if (!systemEl || !gradeEl) return;
+
+      const system = normalizeUpgradeSystemValue(systemEl.value);
+      const grades = getUpgradeGradeOptions(system);
+      let grade = gradeEl.value || '';
+
+      if (isGraduate(system)) {
+        grade = '';
+        gradeEl.value = '';
+        gradeEl.disabled = true;
+      } else {
+        gradeEl.disabled = false;
+
+        if (!keepCurrentGrade && grades.length && grades.indexOf(grade) < 0) {
+          grade = grades[0];
+          gradeEl.value = grade;
+        }
+
+        if (keepCurrentGrade && grades.length && grades.indexOf(grade) < 0) {
+          grade = grades[0];
+          gradeEl.value = grade;
+        }
+      }
+
+      let status = statusEl ? statusEl.value : item['新狀態'];
+      let reason = reasonEl ? reasonEl.value : item['停用原因'];
+
+      if (resetStatusBySystem) {
+        status = getUpgradeDefaultStatusBySystem(system);
+        reason = status === '停用' ? getUpgradeDefaultStopReason(system) : '';
+      }
+
+      status = status === '停用' ? '停用' : '啟用';
+
+      if (status === '啟用') {
+        reason = '';
+      } else {
+        reason = reason || getUpgradeDefaultStopReason(system);
+      }
+
+      item['新學制'] = system;
+      item['新年級'] = grade;
+      item['新狀態'] = status;
+      item['停用原因'] = reason;
+
+      if (statusCell) {
+        statusCell.innerHTML = buildUpgradeStatusSelect(index, status);
+      }
+
+      if (reasonCell) {
+        reasonCell.innerHTML = buildUpgradeStopReasonSelect(index, system, status, reason);
+      }
+    }
+
+    function collectUpgradePayload() {
+      syncAllVisibleUpgradeRows();
+
+      const items = state.upgradePreviewItems || [];
+
+      return items.map(function(item) {
+        return {
+          UID: item['UID'],
+          姓名: item['姓名'],
+          原學制: item['原學制'],
+          原年級: item['原年級'],
+          新學制: item['新學制'],
+          新年級: item['新年級'],
+          新狀態: item['新狀態'],
+          停用原因: item['停用原因']
+        };
+      });
+    }
+
+    function closeUpgradeModal() {
+      document.getElementById('upgradeModal').style.display = 'none';
+      state.upgradePreviewItems = [];
+      state.upgradeSearchKeyword = '';
+      document.getElementById('upgradeList').innerHTML = '';
+      document.getElementById('upgradeCount').textContent = '尚未載入年度升級資料';
+
+      const searchEl = document.getElementById('upgradeSearchKeyword');
+      const infoEl = document.getElementById('upgradeSearchInfo');
+
+      if (searchEl) {
+        searchEl.value = '';
+      }
+
+      if (infoEl) {
+        infoEl.textContent = '尚未搜尋';
+      }
+    }
+
+    function runUpgrade() {
+      const payload = collectUpgradePayload();
+
+      if (!payload.length) {
+        alert('沒有可執行年度升級的名單');
+        return;
+      }
+
+      if (!confirm('確定執行年度升級？\n\n目前會執行全部預覽名單：' + payload.length + ' 筆。\n搜尋姓名只影響畫面顯示，不會排除未顯示名單。')) {
+        return;
+      }
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          showToast((res.message || '年度升級完成') + '：' + (res.count || 0) + ' 筆');
+          closeUpgradeModal();
+          searchMembers(0);
+        })
+        .withFailureHandler(handleError)
+        .runAnnualUpgrade(payload);
+    }
+
+    function openStatsModal() {
+      fillStatsFieldOptions();
+      document.getElementById('statsModal').style.display = 'block';
+    }
+
+    function closeStatsModal() {
+      document.getElementById('statsModal').style.display = 'none';
+    }
+
+    function fillStatsFieldOptions() {
+      const fields = [
+        { value: '照顧區', label: '照顧區' },
+        { value: '大區', label: '大區' },
+        { value: '排數', label: '排數' },
+        { value: '現在學制', label: '學制' },
+        { value: '現在年級', label: '年級' },
+        { value: '身分', label: '身分' },
+        { value: '性別', label: '性別' },
+        { value: '啟用狀態', label: '啟用狀態' },
+        { value: '中學生/歷高畢', label: '中學生/歷高畢' }
+      ];
+
+      const rowEl = document.getElementById('statsRowField');
+      const colEl = document.getElementById('statsColField');
+      const currentRow = rowEl.value || '照顧區';
+      const currentCol = colEl.value || '排數';
+
+      rowEl.innerHTML = '';
+      colEl.innerHTML = '';
+
+      fields.forEach(function(field) {
+        const rowOption = document.createElement('option');
+        rowOption.value = field.value;
+        rowOption.textContent = field.label;
+        rowEl.appendChild(rowOption);
+      });
+
+      const noColumnOption = document.createElement('option');
+      noColumnOption.value = '';
+      noColumnOption.textContent = '不使用欄欄位';
+      colEl.appendChild(noColumnOption);
+
+      fields.forEach(function(field) {
+        const colOption = document.createElement('option');
+        colOption.value = field.value;
+        colOption.textContent = field.label;
+        colEl.appendChild(colOption);
+      });
+
+      rowEl.value = currentRow;
+      colEl.value = currentCol;
+    }
+
+    function generateStatsTable() {
+      const rowField = getValue('statsRowField');
+      const colField = getValue('statsColField');
+      const valueMode = getValue('statsValueMode');
+
+      if (!rowField) {
+        alert('請選擇列欄位');
+        return;
+      }
+
+      if (colField && rowField === colField) {
+        alert('列欄位與欄欄位不可相同');
+        return;
+      }
+
+      document.getElementById('statsMeta').textContent = '統計中...';
+      document.getElementById('statsResultBox').innerHTML = '<div class="empty">統計中...</div>';
+
+      showLoading();
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          hideLoading();
+          state.statsResult = res;
+          renderStatsTable(res);
+        })
+        .withFailureHandler(handleError)
+        .getPivotAnalysis({
+          filters: getFilterPayload(),
+          rowField: rowField,
+          colField: colField,
+          valueMode: valueMode
+        });
+    }
+
+    function renderStatsTable(res) {
+      const box = document.getElementById('statsResultBox');
+      const meta = document.getElementById('statsMeta');
+
+      if (!res || !res.success) {
+        meta.textContent = '統計失敗';
+        box.innerHTML = '<div class="empty">統計失敗</div>';
+        return;
+      }
+
+      const rowLabels = res.rowLabels || [];
+      const colLabels = res.colLabels || [];
+      const matrix = res.matrix || {};
+      const rowTotals = res.rowTotals || {};
+      const colTotals = res.colTotals || {};
+
+      meta.textContent =
+        '來源符合篩選：' + (res.sourceTotal || 0) + ' 筆' +
+        '｜統計值：' + (res.valueLabel || '人數') +
+        '｜列：' + (res.rowField || '') +
+        '｜欄：' + (res.colField || '不使用') +
+        '｜總計：' + (res.grandTotal || 0);
+
+      if (!rowLabels.length || !colLabels.length) {
+        box.innerHTML = '<div class="empty">沒有可統計資料</div>';
+        return;
+      }
+
+      let html = '';
+      html += '<table class="stats-table">';
+      html += '<thead><tr>';
+      html += '<th>' +
+        escapeHtml(res.rowField || '列') +
+        '<br>' +
+        '<span class="stats-value-label">' + escapeHtml(res.valueLabel || '人數') + '</span>' +
+        '</th>';
+
+      colLabels.forEach(function(colLabel) {
+        html += '<th>' + escapeHtml(colLabel) + '</th>';
+      });
+
+      html += '<th>總計</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+
+      rowLabels.forEach(function(rowLabel) {
+        html += '<tr>';
+        html += '<td>' + escapeHtml(rowLabel) + '</td>';
+
+        colLabels.forEach(function(colLabel) {
+          const value = matrix[rowLabel] && matrix[rowLabel][colLabel] ? matrix[rowLabel][colLabel] : 0;
+          html += '<td>' + escapeHtml(value) + '</td>';
+        });
+
+        html += '<td><strong>' + escapeHtml(rowTotals[rowLabel] || 0) + '</strong></td>';
+        html += '</tr>';
+      });
+
+      html += '<tr class="stats-total-row">';
+      html += '<td>總計</td>';
+
+      colLabels.forEach(function(colLabel) {
+        html += '<td>' + escapeHtml(colTotals[colLabel] || 0) + '</td>';
+      });
+
+      html += '<td>' + escapeHtml(res.grandTotal || 0) + '</td>';
+      html += '</tr>';
+      html += '</tbody></table>';
+
+      box.innerHTML = html;
+    }
+
+    function copyStatsTable() {
+      if (!state.statsResult || !state.statsResult.tsv) {
+        alert('請先產生統計表');
+        return;
+      }
+
+      copyTextToClipboard(state.statsResult.tsv);
+      showToast('統計表已複製，可直接貼到 Excel');
+    }
+
+    function findMember(uid) {
+      return state.members.find(function(m) {
+        return String(m['UID']) === String(uid);
+      });
+    }
+
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      el.value = value === undefined || value === null ? '' : value;
+    }
+
+    function escapeHtml(value) {
+      return String(value === undefined || value === null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/\\/g, '\\\\');
+    }
+  </script>
+</body>
+</html>
